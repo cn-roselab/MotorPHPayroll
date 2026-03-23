@@ -1,151 +1,136 @@
-/*
- * ==============================================================
- * MotorPH Payroll System – Task 9 (Advanced Version)
- * ==============================================================
- *
- * Program Purpose:
- * This program computes an employee's semi-monthly gross salary,
- * applies government deductions (SSS, PhilHealth, Pag-IBIG, Income Tax),
- * and calculates the final net pay.
- *
- * Design Principles Used:
- * 1. Self-documenting variable and method names.
- * 2. Constants used instead of hard-coded values.
- * 3. Clear separation of responsibilities using reusable methods.
- * 4. Structured formatting for readability.
- * 5. Input validation to handle invalid salary values.
- *
- * Formula Overview:
- * Gross Salary = Hourly Rate × Total Hours Worked
- *
- * Net Pay = Gross Salary − (SSS + PhilHealth + Pag-IBIG + Income Tax)
- *
- * This implementation follows clean code practices
- * and demonstrates professional Java formatting standards.
- */
-
 import java.util.Scanner;
 
 public class MotorPHApplyDeductions {
 
-    // ===================== CONSTANTS =====================
+    // ===================== SSS (BASED ON MATRIX) =====================
 
-    // Government deduction rates defined as constants
-    private static final double SSS_RATE = 0.05;
-    private static final double PHILHEALTH_RATE = 0.03;
-    private static final double PAGIBIG_RATE = 0.02;
-    private static final double INCOME_TAX_RATE = 0.10;
-
-    // ===================== DEDUCTION METHODS =====================
-
-    /*
-     * Computes the SSS deduction based on gross salary.
-     */
     public static double computeSSSDeduction(double grossSalary) {
-        return grossSalary * SSS_RATE;
+
+        if (grossSalary < 3250) return 135;
+        else if (grossSalary < 3750) return 157.5;
+        else if (grossSalary < 4250) return 180;
+        else if (grossSalary < 4750) return 202.5;
+        else if (grossSalary < 5250) return 225;
+        else if (grossSalary < 5750) return 247.5;
+        else if (grossSalary < 6250) return 270;
+        else if (grossSalary < 6750) return 292.5;
+        else if (grossSalary < 7250) return 315;
+        else if (grossSalary < 7750) return 337.5;
+        else if (grossSalary < 8250) return 360;
+        else if (grossSalary < 8750) return 382.5;
+        else if (grossSalary < 9250) return 405;
+        else if (grossSalary < 9750) return 427.5;
+        else if (grossSalary < 10250) return 450;
+        else if (grossSalary < 10750) return 472.5;
+        else if (grossSalary < 11250) return 495;
+        else if (grossSalary < 11750) return 517.5;
+        else if (grossSalary < 12250) return 540;
+        else if (grossSalary < 12750) return 562.5;
+        else if (grossSalary < 13250) return 585;
+        else if (grossSalary < 13750) return 607.5;
+        else if (grossSalary < 14250) return 630;
+        else if (grossSalary < 14750) return 652.5;
+        else if (grossSalary < 15250) return 675;
+        else if (grossSalary < 15750) return 697.5;
+        else if (grossSalary < 16250) return 720;
+        else if (grossSalary < 16750) return 742.5;
+        else if (grossSalary < 17250) return 765;
+        else if (grossSalary < 17750) return 787.5;
+        else if (grossSalary < 18250) return 810;
+        else if (grossSalary < 18750) return 832.5;
+        else if (grossSalary < 19250) return 855;
+        else if (grossSalary < 19750) return 877.5;
+        else if (grossSalary < 20250) return 900;
+        else if (grossSalary < 20750) return 922.5;
+        else if (grossSalary < 21250) return 945;
+        else if (grossSalary < 21750) return 967.5;
+        else if (grossSalary < 22250) return 990;
+        else if (grossSalary < 22750) return 1012.5;
+        else if (grossSalary < 23250) return 1035;
+        else if (grossSalary < 23750) return 1057.5;
+        else if (grossSalary < 24250) return 1080;
+        else if (grossSalary < 24750) return 1102.5;
+        else return 1125;
     }
 
-    /*
-     * Computes the PhilHealth deduction based on gross salary.
-     */
+    // ===================== PHILHEALTH =====================
+
     public static double computePhilHealthDeduction(double grossSalary) {
-        return grossSalary * PHILHEALTH_RATE;
+
+        double contribution;
+
+        if (grossSalary <= 10000) {
+            contribution = 300;
+        } else if (grossSalary >= 60000) {
+            contribution = 1800;
+        } else {
+            contribution = grossSalary * 0.03;
+        }
+
+        return contribution / 2; // employee share
     }
 
-    /*
-     * Computes the Pag-IBIG deduction based on gross salary.
-     */
+    // ===================== PAG-IBIG =====================
+
     public static double computePagIbigDeduction(double grossSalary) {
-        return grossSalary * PAGIBIG_RATE;
+
+        if (grossSalary <= 1500) {
+            return grossSalary * 0.01;
+        } else {
+            return grossSalary * 0.02;
+        }
     }
 
-    /*
-     * Computes the income tax deduction based on gross salary.
-     */
+    // ===================== INCOME TAX =====================
+
     public static double computeIncomeTaxDeduction(double grossSalary) {
-        return grossSalary * INCOME_TAX_RATE;
+
+        if (grossSalary <= 20833) return 0;
+        else if (grossSalary <= 33333)
+            return (grossSalary - 20833) * 0.20;
+        else if (grossSalary <= 66667)
+            return (grossSalary - 33333) * 0.25 + 2500;
+        else
+            return (grossSalary - 66667) * 0.30 + 10833;
     }
 
-    // ===================== NET PAY METHOD =====================
+    // ===================== NET PAY =====================
 
-    /*
-     * Computes total deductions and returns the employee's net pay.
-     * This method centralizes deduction calls to avoid duplication.
-     */
     public static double computeNetPay(double grossSalary) {
 
-        double sssDeduction = computeSSSDeduction(grossSalary);
-        double philHealthDeduction = computePhilHealthDeduction(grossSalary);
-        double pagIbigDeduction = computePagIbigDeduction(grossSalary);
-        double incomeTaxDeduction = computeIncomeTaxDeduction(grossSalary);
+        double sss = computeSSSDeduction(grossSalary);
+        double philhealth = computePhilHealthDeduction(grossSalary);
+        double pagibig = computePagIbigDeduction(grossSalary);
+        double tax = computeIncomeTaxDeduction(grossSalary);
 
-        double totalDeductions =
-                sssDeduction +
-                        philHealthDeduction +
-                        pagIbigDeduction +
-                        incomeTaxDeduction;
+        double totalDeductions = sss + philhealth + pagibig + tax;
 
         return grossSalary - totalDeductions;
     }
 
-    // ===================== MAIN PROGRAM =====================
+    // ===================== OPTIONAL TEST =====================
 
     public static void main(String[] args) {
 
-        Scanner inputScanner = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
 
-        System.out.println("===== MOTORPH PAYROLL SYSTEM =====");
+        System.out.print("Enter Gross Salary: ");
+        double gross = sc.nextDouble();
 
-        // Collect employee data
-        System.out.print("Enter Employee Name: ");
-        String employeeFullName = inputScanner.nextLine();
+        double sss = computeSSSDeduction(gross);
+        double philhealth = computePhilHealthDeduction(gross);
+        double pagibig = computePagIbigDeduction(gross);
+        double tax = computeIncomeTaxDeduction(gross);
+        double net = computeNetPay(gross);
 
-        System.out.print("Enter Hourly Rate: ");
-        double hourlyRate = inputScanner.nextDouble();
+        System.out.println("\n===== DEDUCTION BREAKDOWN =====");
+        System.out.printf("Gross Salary: %.2f\n", gross);
+        System.out.printf("SSS: %.2f\n", sss);
+        System.out.printf("PhilHealth: %.2f\n", philhealth);
+        System.out.printf("Pag-IBIG: %.2f\n", pagibig);
+        System.out.printf("Tax: %.2f\n", tax);
+        System.out.printf("Net Pay: %.2f\n", net);
 
-        System.out.print("Enter Total Hours Worked: ");
-        double totalHoursWorked = inputScanner.nextDouble();
-
-        // Validate that salary inputs are positive
-        if (hourlyRate <= 0 || totalHoursWorked <= 0) {
-            System.out.println("Invalid input detected. Hourly rate and hours worked must be positive values.");
-            inputScanner.close();
-            return;
-        }
-
-        // Compute gross salary
-        double grossSalary = hourlyRate * totalHoursWorked;
-
-        // Compute individual deductions
-        double sssDeduction = computeSSSDeduction(grossSalary);
-        double philHealthDeduction = computePhilHealthDeduction(grossSalary);
-        double pagIbigDeduction = computePagIbigDeduction(grossSalary);
-        double incomeTaxDeduction = computeIncomeTaxDeduction(grossSalary);
-
-        double totalDeductions =
-                sssDeduction +
-                        philHealthDeduction +
-                        pagIbigDeduction +
-                        incomeTaxDeduction;
-
-        double netPay = computeNetPay(grossSalary);
-
-        // ===================== DISPLAY SUMMARY =====================
-
-        System.out.println("\n===== PAYROLL SUMMARY =====");
-        System.out.println("Employee Name: " + employeeFullName);
-
-        System.out.printf("Gross Salary: %.2f\n", grossSalary);
-
-        System.out.println("\n--- Government Deductions ---");
-        System.out.printf("SSS Deduction: %.2f\n", sssDeduction);
-        System.out.printf("PhilHealth Deduction: %.2f\n", philHealthDeduction);
-        System.out.printf("Pag-IBIG Deduction: %.2f\n", pagIbigDeduction);
-        System.out.printf("Income Tax Deduction: %.2f\n", incomeTaxDeduction);
-
-        System.out.printf("Total Deductions: %.2f\n", totalDeductions);
-        System.out.printf("Net Pay: %.2f\n", netPay);
-
-        inputScanner.close();
+        sc.close();
     }
 }
